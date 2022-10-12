@@ -1,26 +1,18 @@
 import { useState } from "react";
 
 function Form(props) {
-    const [name, setName] = useState("Use hooks");
-
-    function handleSubmit(e) {
-        e.preventDefault();
-        props.addTask(name);
-        setName("");
-    }
-
-    function handleChange(e) {
-        setName(e.target.value);
-        // console.log(name);
-    }
+    const [name, setName] = useState("");
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+                props.addTask(name);
+                setName("");
+            }}
+        >
             <h2 className="label-wrapper">
-                <label
-                    htmlFor="new-todo-input"
-                    className="label__lg"
-                >
+                <label htmlFor="new-todo-input" className="label__lg">
                     What needs to be done?
                 </label>
             </h2>
@@ -31,12 +23,11 @@ function Form(props) {
                 name="text"
                 autoComplete="off"
                 value={name}
-                onChange={handleChange}
+                onChange={(e) => {
+                    setName(e.target.value);
+                }}
             />
-            <button
-                type="submit"
-                className="btn btn__primary btn__lg"
-            >
+            <button type="submit" className="btn btn__primary btn__lg">
                 Add
             </button>
         </form>

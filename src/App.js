@@ -1,5 +1,3 @@
-// import "./App.css";
-
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import FilterButton from "./components/FilterButton";
@@ -19,6 +17,15 @@ function App(props) {
 
     const [filter, setFilter] = useState("All");
 
+    const filterList = FILTER_NAMES.map((name) => (
+        <FilterButton
+            key={name}
+            name={name}
+            isPressed={name === filter}
+            setFilter={setFilter}
+        />
+    ));
+
     const taskList = tasks
         .filter(FILTER_MAP[filter])
         .map((task) => (
@@ -33,19 +40,10 @@ function App(props) {
             />
         ));
 
-    const filterList = FILTER_NAMES.map((name) => (
-        <FilterButton
-            key={name}
-            name={name}
-            isPressed={name === filter}
-            setFilter={setFilter}
-        />
-    ));
+  
 
     function deleteTask(id) {
-        const remainingTasks = tasks.filter(
-            (task) => id !== task.id
-        );
+        const remainingTasks = tasks.filter((task) => id !== task.id);
         setTasks(remainingTasks);
     }
 
@@ -65,6 +63,17 @@ function App(props) {
         setTasks(updatedTasks);
     }
 
+    function editTask(id, newName) {
+        const editedTaskList = tasks.map((task) => {
+            // if this task has the same ID as the edited task
+            if (id === task.id) {
+                return { ...task, name: newName };
+            }
+            return task;
+        });
+        setTasks(editedTaskList);
+    }
+
     function addTask(name) {
         const newTask = {
             id: `todo-${nanoid()}`,
@@ -75,31 +84,22 @@ function App(props) {
         console.log(tasks);
     }
 
-    function editTask(id, newName) {
-        const editedTaskList = tasks.map((task) => {
-            // if this task has the same ID as the edited task
-            if (id === task.id) {
-                //
-                return { ...task, name: newName };
-            }
-            return task;
-        });
-        setTasks(editedTaskList);
-    }
-
-    const tasksNoun =
-        taskList.length !== 1 ? "tasks" : "task";
+    const tasksNoun = taskList.length !== 1 ? "tasks" : "task";
     const headingText = `${taskList.length} ${tasksNoun} remaining`;
 
     return (
         <div className="todoapp stack-large">
+           
             <h1>Todo App</h1>
+
             <Form addTask={addTask} />
 
             <div className="filters btn-group stack-exception">
                 {filterList}
             </div>
+
             <h2 id="list-heading">{headingText}</h2>
+
             <ul
                 // role="list"
                 className="todo-list stack-large stack-exception"
@@ -107,6 +107,7 @@ function App(props) {
             >
                 {taskList}
             </ul>
+            
         </div>
     );
 }
